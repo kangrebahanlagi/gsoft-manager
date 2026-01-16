@@ -1,14 +1,5 @@
-import OpenAI from 'openai';
-
-if (!process.env.OPENAI_API_KEY) {
-  console.warn('OPENAI_API_KEY is not set. AI features will be limited.');
-}
-
-const openai = process.env.OPENAI_API_KEY 
-  ? new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
-  : null;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-coder';
 
 export async function generateAIContent(
   prompt: string,
@@ -18,37 +9,52 @@ export async function generateAIContent(
   content: string;
   error?: string;
 }> {
-  if (!openai) {
+  if (!DEEPSEEK_API_KEY) {
     return {
       success: false,
-      content: 'AI service is not configured. Please set OPENAI_API_KEY environment variable.',
-      error: 'OpenAI not configured',
+      content: '',
+      error: 'DeepSeek API key not configured',
     };
   }
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'system',
-          content: context || 'You are a helpful Lua scripting assistant for Growtopia Private Server.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: DEEPSEEK_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content:
+              context ||
+              'You are a Lua scripting assistant specialized in Growsoft (Growtopia Private Server).',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 1000,
+      }),
     });
+
+    if (!response.ok) {
+      throw new Error('DeepSeek API error');
+    }
+
+    const data = await response.json();
 
     return {
       success: true,
-      content: completion.choices[0]?.message?.content || '',
+      content: data.choices?.[0]?.message?.content || '',
     };
   } catch (error: any) {
-    console.error('OpenAI API error:', error);
+    console.error('DeepSeek API error:', error);
     return {
       success: false,
       content: '',

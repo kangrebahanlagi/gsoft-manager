@@ -1,84 +1,96 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { OpenAI } from 'openai';
 import { fetchDocsContent } from '@/lib/docs-fetcher';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-// System prompt with Growsoft Lua context
-const SYSTEM_PROMPT = `You are an expert Lua scripting assistant specialized in Growtopia Private Server (Growsoft). 
-Your knowledge includes:
-- Growsoft Lua API functions and events
-- Packet handling and hook systems
-- Game mechanics and automation
-- Lua best practices and optimization
-
-Guidelines:
-1. Always provide accurate, working Lua code examples
-2. Explain concepts clearly with practical examples
-3. Focus on Growsoft-specific implementations
-4. Include error handling and best practices
-5. When unsure, suggest checking official documentation
-
-Format responses with clear explanations and code blocks.`;
-
-export async function POST(request: NextRequest) {
+/**
+ * DeepSeek AI – Growsoft Lua Assistant
+ * Compatible with OpenAI-style chat completions
+ */
+export async function POST(req: NextRequest) {
   try {
-    const { messages, context } = await request.json();
-    
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key not configured');
+    const body = await req.json();
+    const rawMessages = body.messages || [];
+
+    if (!process.env.DEEPSEEK_API_KEY) {
+      throw new Error('DEEPSEEK_API_KEY not set');
     }
 
-    // Fetch relevant documentation for context
-    let docsContext = '';
-    if (context === 'growtopia-lua-growsoft') {
-      const docs = await fetchDocsContent(['api-reference', 'events', 'packets']);
-      docsContext = `\n\nRelevant Documentation:\n${docs}`;
-    }
+    const messages = rawMessages.map((m: any) => ({
+      role: m.role,
+      content: m.content,
+    }));
 
-    // Prepare messages for OpenAI
-    const openaiMessages = [
-      {
-        role: 'system',
-        content: SYSTEM_PROMPT + docsContext,
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
       },
-      ...messages.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
-    ];
-
-    // Call OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4-1106-preview',
-      messages: openaiMessages,
-      temperature: 0.7,
-      max_tokens: 2000,
-      stream: false,
+      body: JSON.stringify({
+        model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+        temperature: 0.6,
+        max_tokens: 2000,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...messages,
+        ],
+      }),
     });
 
-    const reply = completion.choices[0]?.message?.content || 'No response generated.';
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('DeepSeek error:', data);
+      return NextResponse.json({
+        success: false,
+        reply:
+          data?.error?.message ||
+          'AI unavailable (possibly insufficient balance)',
+      });
+    }
 
     return NextResponse.json({
       success: true,
-      reply,
+      reply: data.choices?.[0]?.message?.content || '',
     });
-  } catch (error: any) {
-    console.error('AI API error:', error);
-    
-    // Fallback responses if OpenAI fails
-    const fallbackResponses = [
-      "I understand you need help with Lua scripting. Unfortunately, I'm having trouble accessing my full capabilities right now. You might want to check the documentation or try again later.",
-      "As a Growsoft Lua assistant, I typically help with script generation and debugging. Please try your request again in a moment.",
-      "For Lua scripting help, you can check the documentation section for API references and examples while I work on getting back to full functionality.",
-    ];
-    
+  } catch (error) {
+    console.error('[AI ERROR]', error);
     return NextResponse.json({
-      success: true,
-      reply: fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)],
+      success: false,
+      reply:
+        'AI sedang tidak tersedia. Silakan cek saldo atau konfigurasi DeepSeek.',
     });
   }
 }
+
+/**
+ * 🔥 OPTIMIZED SYSTEM PROMPT – Growsoft Lua
+ */
+const SYSTEM_PROMPT = `
+You are a senior Lua developer specialized in Growtopia Private Server scripting (Growsoft).
+
+You have deep knowledge of:
+- Growsoft Lua API (gt.sendPacket, gt.on, gt.hook, gt.getLocal, gt.sleep, etc.)
+- Packet handling, tile updates, dialogs, hooks, and events
+- Automation scripts (auto farm, auto break, auto collect, bot helpers)
+- Performance-safe Lua scripting for game environments
+
+Rules:
+1. Always write VALID Lua 5.x code
+2. Use Growsoft-style APIs (prefix: gt.)
+3. Avoid imaginary functions
+4. Prefer event-based logic over infinite loops
+5. Add comments for clarity
+6. If fixing code, explain the bug briefly
+7. If generating code, provide a COMPLETE script ready to use
+
+Formatting:
+- Use markdown
+- Put code inside triple backticks (lua)
+- Be concise but clear
+
+Context:
+This code will run inside Growsoft Lua environment (NOT standard Lua, NOT Roblox).
+`;

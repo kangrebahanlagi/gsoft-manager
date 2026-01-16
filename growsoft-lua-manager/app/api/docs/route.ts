@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchDocsIndex, fetchDocByPath } from '@/lib/docs-fetcher';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // GET /api/docs
 export async function GET(request: NextRequest) {
   try {

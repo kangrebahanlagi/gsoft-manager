@@ -5,13 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import CodeEditor from '@/components/CodeEditor';
 import { ArrowLeftIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-
-interface Script {
-  id: string;
-  name: string;
-  content: string;
-  status: 'valid' | 'error';
-}
+import type { Script } from '@/types';
 
 export default function EditorPage() {
   const params = useParams();

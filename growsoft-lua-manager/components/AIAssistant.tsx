@@ -85,6 +85,19 @@ export default function AIAssistant() {
       if (!response.ok) throw new Error('API request failed');
 
       const data = await response.json();
+	  if (!data.success) {
+	  setMessages(prev => [
+		...prev,
+		{
+		  role: 'assistant',
+		  content: `⚠️ ${data.reply}`,
+		  timestamp: new Date(),
+		},
+	  ]);
+	  setIsLoading(false);
+	  return;
+	}
+
       
       simulateTyping(data.reply, () => {
         const assistantMessage: Message = {
@@ -105,7 +118,7 @@ export default function AIAssistant() {
           ...prev,
           {
             role: 'assistant',
-            content: 'Sorry, I encountered an error. Please try again. Make sure your OpenAI API key is configured.',
+            content: 'AI sedang tidak tersedia. Pastikan DeepSeek API key & saldo tersedia.',
             timestamp: new Date(),
           },
         ]);

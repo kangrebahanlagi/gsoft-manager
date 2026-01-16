@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { 
   CheckCircleIcon, 
   ExclamationTriangleIcon,
-  SaveIcon,
+  ArrowDownTrayIcon,
   PlayIcon,
   DocumentIcon 
 } from '@heroicons/react/24/outline';
@@ -128,7 +128,7 @@ export default function CodeEditor({
             disabled={isSaving}
             className="px-3 py-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 rounded-lg flex items-center space-x-2 text-sm"
           >
-            <SaveIcon className="w-4 h-4" />
+            <ArrowDownTrayIcon className="w-4 h-4" />
             <span className="hidden sm:inline">{isSaving ? 'Saving...' : 'Save'}</span>
           </button>
         </div>

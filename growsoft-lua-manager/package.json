@@ -2,6 +2,9 @@
   "name": "growsoft-lua-manager",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,31 +12,29 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@monaco-editor/react": "^4.5.2",
+    "autoprefixer": "^10.4.16",
+    "lucide-react": "^0.303.0",
+    "marked": "^11.0.0",
+    "mongodb": "^6.21.0",
     "next": "14.0.4",
+    "next-themes": "^0.2.1",
+    "postcss": "^8.4.31",
     "react": "^18",
     "react-dom": "^18",
-    "@monaco-editor/react": "^4.5.2",
-    "mongodb": "^6.0.0",
-    "openai": "^4.0.0",
-    "marked": "^11.0.0",
-    "@heroicons/react": "^2.0.18",
-    "tailwindcss": "^3.3.0",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "lua-in-js": "^1.5.0",
-    "next-themes": "^0.2.1",
-    "lucide-react": "^0.303.0"
+    "tailwindcss": "^3.3.0"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/mongodb": "^4.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/mongodb": "^4.0.0",
-    "typescript": "^5",
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
-    "@tailwindcss/typography": "^0.5.10"
+    "typescript": "^5"
   }
 }
