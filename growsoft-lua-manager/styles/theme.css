@@ -1,0 +1,146 @@
+/* Custom theme styles */
+
+@layer base {
+  :root {
+    --color-primary: 59 130 246;
+    --color-secondary: 139 92 246;
+    --color-success: 34 197 94;
+    --color-warning: 234 179 8;
+    --color-danger: 239 68 68;
+    --color-dark: 17 24 39;
+    --color-light: 249 250 251;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-gray-800/70 backdrop-blur-lg border border-gray-700/50;
+  }
+  
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(theme('colors.gray.800'), theme('colors.gray.800')) padding-box,
+                linear-gradient(45deg, theme('colors.blue.500'), theme('colors.purple.600')) border-box;
+    border: 2px solid transparent;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent;
+  }
+  
+  .btn-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+@layer utilities {
+  .backdrop-saturate {
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .mask-gradient {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+  
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px theme('colors.blue.500'), 0 0 10px theme('colors.blue.500');
+  }
+  to {
+    box-shadow: 0 0 10px theme('colors.blue.500'), 0 0 20px theme('colors.blue.500');
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Monaco Editor Customization */
+.monaco-editor .cursor {
+  @apply shadow-lg;
+}
+
+.mtk1 { color: #d4d4d4; }
+.mtk2 { color: #1e1e1e; }
+.mtk3 { color: #000080; }
+.mtk4 { color: #6a9955; }
+.mtk5 { color: #569cd6; }
+.mtk6 { color: #b5cea8; }
+.mtk7 { color: #646695; }
+.mtk8 { color: #c586c0; }
+.mtk9 { color: #9cdcfe; }
+.mtk10 { color: #f44747; }
+.mtk11 { color: #ce9178; }
+.mtk12 { color: #6796e6; }
+.mtk13 { color: #808080; }
+.mtk14 { color: #d16969; }
+.mtk15 { color: #dcdcaa; }
+.mtk16 { color: #4ec9b0; }
+.mtk17 { color: #c586c0; }
+.mtk18 { color: #4fc1ff; }
+.mtk19 { color: #c8c8c8; }
+.mtk20 { color: #cd9731; }
+.mtk21 { color: #b267e6; }
+.mtki { font-style: italic; }
+.mtkb { font-weight: bold; }
+.mtku { text-decoration: underline; }
